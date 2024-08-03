@@ -2,6 +2,8 @@
 using SonsSdk;
 using SonsSdk.Attributes;
 using SUI;
+using TheForest;
+using TheForest.Utils;
 using static Relocator.Utils;
 
 namespace Relocator;
@@ -11,8 +13,14 @@ public class Relocator : SonsMod, IOnGameActivatedReceiver
     protected override void OnSdkInitialized()
     {
         SettingsRegistry.CreateSettings(this, null, typeof(Config));
-        Config.ToggleKey.Notify(() =>
+        
+        Config.ToggleKey.Notify(delegate
         {
+            if (!IsInGame || IsInConsole)
+            {
+                return;
+            }
+
             Config.Enabled.Value = !Config.Enabled.Value;
             Apply();
 
